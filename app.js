@@ -3,6 +3,7 @@ var path = require('path');
 var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
+var session = require('express-session');
 var bodyParser = require('body-parser');
 var ejs = require('ejs');
 
@@ -19,10 +20,56 @@ app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
+//app.use(cookieParser());
 app.use(cookieParser());
+app.use(session({
+    secret: 'verySecretString',
+    resave: true,
+    saveUninitialized: true,
+    cookie: { httpOnly: false, path: '/c3' }
+}));
+
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', routes);
+
+var players = {};
+function regAuth(ip){
+    var player = {
+        name: generatePlayerName()
+    };
+    players[ip] = player;
+    return player;
+}
+function checkAuth(ip){
+    return players[ip] !== undefined;
+}
+function getPlayer(ip){
+    return players[ip];
+}
+
+var cntr = 0;
+var generatePlayerName = function(){
+    var ans = "Player" + cntr.toString();
+    cntr++;
+    return ans;
+};
+app.use('/c3', function(req, res, next) {
+//    req.session.name = generatePlayerName();
+    var ip = req._remoteAddress;
+    var player;
+    if (checkAuth(ip)) {
+        player = getPlayer(ip);
+    } else {
+        player = regAuth(ip);
+        res.cookie('options', JSON.stringify(player));
+    }
+    console.log(req.session.id, ip);
+    res.render('c3.html');
+});
+app.use('/players', function(req,res,next){
+    res.send(players);
+});
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
