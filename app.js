@@ -6,6 +6,7 @@ var cookieParser = require('cookie-parser');
 var session = require('express-session');
 var bodyParser = require('body-parser');
 var ejs = require('ejs');
+var fs = require('fs');
 
 var routes = require('./routes/index');
 
@@ -32,6 +33,31 @@ app.use(session({
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', routes);
+
+var noop = function(){};
+function readJSONFile(filepath, callback){
+    callback = callback || noop;
+    fs.readFile(filepath, {encoding: "utf8"}, function(err, filedata){
+        if (err) {
+            console.log("read error:", err);
+            callback(err, null);
+        } else {
+            // some hack with first symbol =/
+            filedata = filedata.replace(/^\uFEFF/, '');
+            // parsing file to JSON object
+            var jsondata = JSON.parse(filedata);
+
+            callback(null, jsondata);
+        }
+    });
+}
+function readMapKey(){
+    var filePath = path.join(__dirname, 'apiMapKey.txt');
+    readJSONFile(filePath, function(err, data){
+        app.apiMapKey = data.apiMapKey;
+    });
+}
+readMapKey();
 
 var players = {};
 function regAuth(ip){
@@ -65,7 +91,7 @@ app.use('/c3', function(req, res, next) {
         res.cookie('options', JSON.stringify(player));
     }
     console.log(req.session.id, ip);
-    res.render('c3.html');
+    res.render('c3.html', {apiMapKey: app.apiMapKey});
 });
 app.use('/players', function(req,res,next){
     res.send(players);

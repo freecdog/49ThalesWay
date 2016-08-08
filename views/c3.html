@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <title></title>
     <link rel="stylesheet" href="stylesheets/style.css">
+
+    <script src="/javascripts/require.js" data-main="javascripts/requireCore.js"></script>
+
 </head>
 <body>
     <!--<div><h1>c3</h1></div>-->
@@ -82,8 +85,14 @@
 
             settleHereUI.addEventListener('click', function() {
                 var pos = map.getCenter();
+                var core = require('core');
+                console.log("core.version", core.version);
                 var house = new core.House({pos: pos});
                 var marker = createMarkerWithImg(pos, map, house.getImgSource());
+
+
+                core.Test.run1();
+
             });
         }
 
@@ -148,11 +157,11 @@
 
 
     </script>
-    <script src="https://maps.googleapis.com/maps/api/js?key=&callback=initMap" async="" defer=""></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=<%= apiMapKey %>&callback=initMap" async="" defer=""></script>
 
-    <script src="/javascripts/underscore.js"></script>
-    <script src="/javascripts/core.js"></script>
-    <script src="/javascripts/House.js"></script>
+    <!--<script src="/javascripts/underscore.js"></script>-->
+    <!--<script src="/javascripts/core.js"></script>-->
+    <!--<script src="/javascripts/House.js"></script>-->
 
 
 
