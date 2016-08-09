@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+    <div>Poshel nahui</div>
+    <div>Poshel nahui</div>
+    <div>Poshel nahui</div>
+    <div>Pidoras</div>
+    <div>&nbsp;</div>
+    <div id="error"></div>
+
+    <script>
+        var error = "<%= error %>";
+        console.log(error);
+
+        var errorId = document.getElementById("error");
+        errorId.innerHTML = error;
+
+    </script>
+</body>
+</html>

@@ -44,7 +44,7 @@ define(function (require, exports, module) {
             }
 
             //var generation = new generation();
-            generation.idCounter = generation.idCounter | 0;
+            generation.idCounter = generation.idCounter || 0;
             var ans = generation.idCounter;
 
             if (obj instanceof core.Person) {

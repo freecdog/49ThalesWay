@@ -68,32 +68,40 @@
         };
 
 
-        function SettleControl(controlDiv, map, center) {
+        function noActionFunction(){console.log("no action");};
+        function MapButtonControl(controlDiv, options, clickAction){
             var control = this;
 
-            control.center_ = center;
+            options = options || {};
+
+            control._center = options.center;
             controlDiv.style.clear = 'both';
 
-            var settleHereUI = document.createElement('div');
-            settleHereUI.id = 'settleHereUI';
-            controlDiv.appendChild(settleHereUI);
+            var mapButtonHereUI = document.createElement('div');
+            mapButtonHereUI.id = 'mapButtonHereUI';
+            controlDiv.appendChild(mapButtonHereUI);
 
-            var settleHereText = document.createElement('div');
-            settleHereText.id = 'settleHereText';
-            settleHereText.innerHTML = 'Settle Here';
-            settleHereUI.appendChild(settleHereText);
+            var mapButtonHereText = document.createElement('div');
+            mapButtonHereText.id = 'mapButtonHereText';
+            mapButtonHereText.innerHTML = options.buttonText;
+            mapButtonHereUI.appendChild(mapButtonHereText);
 
-            settleHereUI.addEventListener('click', function() {
-                var pos = map.getCenter();
-                var core = require('core');
-                console.log("core.version", core.version);
-                var house = new core.House({pos: pos});
-                var marker = createMarkerWithImg(pos, map, house.getImgSource());
+            mapButtonHereUI.addEventListener('click', clickAction);
+        }
+        function MapButton(options, clickAction, uiPosition){
+            options = options || {};
+            if (typeof clickAction !== "function") clickAction = noActionFunction;
+            if (!uiPosition) uiPosition = google.maps.ControlPosition.LEFT_CENTER;
 
+            var MapButtonControlDiv = document.createElement('div');
+            var mapButtonControl = new MapButtonControl(MapButtonControlDiv, options, clickAction);
 
-                core.Test.run1();
+            MapButtonControlDiv.index = 1;
+            //MapButtonControlDiv.style['padding-left'] = '10px';
+            MapButtonControlDiv.style['padding'] = '10px';
+            map.controls[uiPosition].push(MapButtonControlDiv);
 
-            });
+            return mapButtonControl;
         }
 
         var map;
@@ -112,12 +120,20 @@
             map.controls[google.maps.ControlPosition.TOP_CENTER].push(centerControlDiv);
 
 
-            var settleControlDiv = document.createElement('div');
-            var settleControl = new SettleControl(settleControlDiv, map, prima);
+            var settleButton = new MapButton(
+                    {center: prima, buttonText: 'Settle Here'},
+                    function() {
+                        var pos = map.getCenter();
+                        var core = require('core');
+                        console.log("core.version", core.version);
+                        var house = new core.House({pos: pos});
+                        var marker = createMarkerWithImg(pos, map, house.getImgSource());
 
-            settleControlDiv.index = 1;
-            settleControlDiv.style['padding-left'] = '10px';
-            map.controls[google.maps.ControlPosition.LEFT_CENTER].push(settleControlDiv);
+                        core.Test.run1();
+                    },
+                    google.maps.ControlPosition.LEFT_CENTER
+            );
+            console.warn(settleButton);
 
 
             //var iconSrc = '/data/house/house01.gif';
@@ -157,7 +173,7 @@
 
 
     </script>
-    <script src="https://maps.googleapis.com/maps/api/js?key=<%= apiMapKey %>&callback=initMap" async="" defer=""></script>
+    <!--<script src="https://maps.googleapis.com/maps/api/js?key=<%= apiMapKey %>&callback=initMap" async="" defer=""></script>-->
 
     <!--<script src="/javascripts/underscore.js"></script>-->
     <!--<script src="/javascripts/core.js"></script>-->

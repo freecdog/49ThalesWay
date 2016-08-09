@@ -28,8 +28,9 @@ requirejs.config({
     }
 });
 
-requirejs(['core'], function(core) {
+requirejs(['core', 'https://maps.googleapis.com/maps/api/js?key=<%= apiMapKey %>&callback=initMap'], function(core) {
     console.log("require and angular bootstrap are here, core.version:", core.version);
+    console.warn("special words:", "<%= specialWords %>");
 
     // init angular application (instead of ng-app directive in view)
     //angular.element(document).ready(function() {

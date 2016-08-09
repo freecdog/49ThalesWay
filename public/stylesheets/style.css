@@ -14,7 +14,7 @@ a {
     height: 100%;
 }
 
-#goCenterUI, #setCenterUI, #settleHereUI {
+#goCenterUI, #setCenterUI, #settleHereUI, #mapButtonHereUI {
     background-color: #fff;
     border: 2px solid #fff;
     border-radius: 3px;
@@ -25,7 +25,7 @@ a {
     text-align: center;
 }
 
-#goCenterText, #setCenterText, #settleHereText {
+#goCenterText, #setCenterText, #settleHereText, #mapButtonHereText {
     color: rgb(25,25,25);
     font-family: Roboto,Arial,sans-serif;
     font-size: 15px;
