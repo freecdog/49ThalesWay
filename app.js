@@ -10,6 +10,7 @@ var fs = require('fs');
 
 var routes = require('./routes/index');
 var requireCore = require('./routes/requireCoreRoute');
+var coreApi = require('./routes/coreApi');
 
 var app = express();
 
@@ -97,7 +98,9 @@ app.use('/c3', function(req, res, next) {
 app.use('/players', function(req,res,next){
     res.send(players);
 });
+app.use('/coreApi', coreApi);
 
+// script with maps api key
 app.use('/javascripts', requireCore);
 
 // catch 404 and forward to error handler
